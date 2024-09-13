@@ -25,21 +25,21 @@ async def checktier(
         description="Peak MMR for 3v3",
         default=0,
         min_value=0,
-        max_value=1999
+        max_value=2500
     ),
     peak2s: int = SlashOption(
         name="peak2s",
         description="Peak MMR for 2v2",
         default=0,
         min_value=0,
-        max_value=1999
+        max_value=2500
     ),
     peak1s: int = SlashOption(
         name="peak1s",
         description="Peak MMR for 1v1",
         default=0,
         min_value=0,
-        max_value=1999
+        max_value=2500
     )
 ):
     if game.lower() == "rocket league":
