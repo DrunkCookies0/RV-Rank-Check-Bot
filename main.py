@@ -20,14 +20,14 @@ async def checktier(
         description="Choose the format (1v1, 2v2, 3v3)",
         choices=["1v1", "2v2", "3v3"]
     ),
-    peak3s: str = SlashOption(
+    peak3s: int = SlashOption(
         name="peak3s",
         description="Peak MMR for 3v3",
         default=0,
         min_value=0,
         max_value=2500
     ),
-    peak2s: str = SlashOption(
+    peak2s: int = SlashOption(
         name="peak2s",
         description="Peak MMR for 2v2",
         default=0,
