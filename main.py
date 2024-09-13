@@ -79,7 +79,7 @@ def determine_tier(format, league_rank):
             (1200, 1349, "Tier 5"),
             (1050, 1199, "Tier 6"),
             (900, 1049, "Tier 7"),
-            (0, 899, "Tier 8"),
+            (400, 899, "Tier 8"),
         ],
         "2v2": [
             (1800, 9999, "Tier 1"),
@@ -89,7 +89,7 @@ def determine_tier(format, league_rank):
             (1200, 1349, "Tier 5"),
             (1050, 1199, "Tier 6"),
             (900, 1049, "Tier 7"),
-            (0, 899, "Tier 8"),
+            (400, 899, "Tier 8"),
         ],
         "1v1": [
             (1800, 9999, "Tier 1"),
@@ -100,18 +100,7 @@ def determine_tier(format, league_rank):
             (1050, 1199, "Tier 6"),
             (900, 1049, "Tier 7"),
             (750, 899, "Tier 8"),
-            (0, 749, "Tier 9"),
-        ],
-        "Crew Battles": [
-            (1800, 9999, "Tier 1"),
-            (1650, 1799, "Tier 2"),
-            (1500, 1649, "Tier 3"),
-            (1350, 1499, "Tier 4"),
-            (1200, 1349, "Tier 5"),
-            (1050, 1199, "Tier 6"),
-            (900, 1049, "Tier 7"),
-            (750, 899, "Tier 8"),
-            (0, 749, "Tier 9"),
+            (400, 749, "Tier 9"),
         ]
     }
 
@@ -119,7 +108,7 @@ def determine_tier(format, league_rank):
         if min_rank <= league_rank <= max_rank:
             return tier_name
     
-    return "Unknown Tier"
+    return "Invalid Tier"
 
 @bot.event
 async def on_ready():
