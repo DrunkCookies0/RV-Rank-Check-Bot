@@ -119,4 +119,4 @@ async def on_ready():
 
 
 
-bot.run('MTI4MzIyOTYzMTcyOTg5NzUyMw.GyVkV-.qmbgdGbxBEuiWGVBQ0PJ5OvzS69uCVFJNW8W_k')
+bot.run(os.environ["DISCORD_TOKEN"])
