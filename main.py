@@ -4,9 +4,7 @@ import os
 from nextcord.ext import commands
 from nextcord import SlashOption
 
-intents = nextcord.Intents.all()
-intents.members = True
-
+intents = nextcord.Intents.default()
 bot = commands.Bot(command_prefix='/', intents=intents)
 
 @bot.slash_command()
@@ -19,8 +17,8 @@ async def checktier(
     ),
     format: str = SlashOption(
         name="format",
-        description="Choose the format (1v1, 2v2, 3v3, Crew Battles)",
-        choices=["1v1", "2v2", "3v3", "Crew Battles"]
+        description="Choose the format (1v1, 2v2, 3v3)",
+        choices=["1v1", "2v2", "3v3"]
     ),
     peak3s: int = SlashOption(
         name="peak3s",
@@ -138,4 +136,4 @@ async def on_ready():
 
 
 
-bot.run('MTI1MTk5OTgxMDY1NjE0NTQ5OQ.GOf_gc.D-eKuOVPzz9tUNO-XCaCjHoJLehWNU_4UYAN9Y')
+bot.run('MTI4MzIyOTYzMTcyOTg5NzUyMw.GRa3aA.Xrc31l3gG28SXkRePGERU4UXob0MXHi-xwtVC0')
