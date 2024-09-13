@@ -49,8 +49,6 @@ async def checktier(
             league_rank = calculate_custom_league_rank(peak2s, peak3s)
         elif format == "1v1":
             league_rank = calculate_league_rank_1v1(peak3s, peak2s, peak1s)
-        elif format == "Crew Battles":
-            league_rank = calculate_crew_battles_league_rank(peak3s, peak2s, peak1s)
         else:
             await ctx.send("Invalid format selected.")
             return
@@ -69,10 +67,6 @@ def calculate_custom_league_rank(peak1, peak2):
 def calculate_league_rank_1v1(peak3s, peak2s, peak1s):
     league_rank_1v1 = (0.2 * peak3s) + (0.25 * peak2s) + (0.8 * peak1s)
     return league_rank_1v1
-
-def calculate_crew_battles_league_rank(peak3s, peak2s, peak1s):
-    league_rank_crew_battles = max(peak3s, peak2s - 120) * 0.6 + max(peak2s, peak3s - 120) * 0.3 + (peak1s * 0.1)
-    return league_rank_crew_battles
 
 def determine_tier(format, league_rank):
     # Define tier ranges for each format
