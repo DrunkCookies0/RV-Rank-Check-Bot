@@ -1,6 +1,5 @@
 import nextcord
 import os
-import json
 
 from nextcord.ext import commands
 from checkTierRL import CheckTierRL

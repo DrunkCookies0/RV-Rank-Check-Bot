@@ -8,7 +8,7 @@ testGuilds = None
 
 class CheckTierRL(commands.Cog):
 
-    def __init__(self, bot, guilds):
+    def __init__(self, bot, guilds = None):
         self.bot = bot
         global testGuilds
         testGuilds = guilds
