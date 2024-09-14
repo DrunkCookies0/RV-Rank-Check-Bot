@@ -2,11 +2,11 @@ import nextcord
 import os
 
 from nextcord.ext import commands
-from checkTierRL import CheckTierRL
+from checkTierRL import CheckTier
 
 intents = nextcord.Intents.default()
 bot = commands.Bot(command_prefix='/', intents=intents)
-bot.add_cog(CheckTierRL(bot))
+bot.add_cog(CheckTier(bot))
 
 @bot.event
 async def on_ready():

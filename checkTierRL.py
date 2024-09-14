@@ -6,7 +6,7 @@ from nextcord import SlashOption
 
 testGuilds = None
 
-class CheckTierRL(commands.Cog):
+class CheckTier(commands.Cog):
 
     def __init__(self, bot, guilds = None):
         self.bot = bot
