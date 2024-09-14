@@ -7,7 +7,7 @@ from checkTierRL import CheckTierRL
 
 intents = nextcord.Intents.default()
 bot = commands.Bot(command_prefix='/', intents=intents)
-bot.add_cog(CheckTierRL(bot))
+bot.add_cog(CheckTierRL(bot, [1221242050305855509])) 
 
 @bot.event
 async def on_ready():
@@ -15,4 +15,6 @@ async def on_ready():
     print('_____________________________________')      
 
 if __name__ == "__main__":
-    bot.run(os.environ["DISCORD_TOKEN"])
+    with open("config.json", "r") as f:
+        config = json.load(f)
+    bot.run(config["token"])
