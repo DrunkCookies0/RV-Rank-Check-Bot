@@ -15,15 +15,19 @@ class CheckTierRL(commands.Cog):
 
 
     @nextcord.slash_command(guild_ids=testGuilds)
-    async def checktier(
+    async def checktier(self):
+        pass
+
+    @checktier.subcommand(description="Check your Rocket League tier")
+    async def rocket_league(
         self,
         ctx,
-        game: str = SlashOption(
-            name="game",
-            description="Name of the game (only 'Rocket League' is supported)",
-            required=True,
-            choices=["Rocket League"]
-        ),
+        #game: str = SlashOption(
+        #    name="game",
+        #    description="Name of the game (only 'Rocket League' is supported)",
+        #    required=True,
+        #    choices=["Rocket League"]
+        #),
         format: str = SlashOption(
             name="format",
             description="Choose the format (1v1, 2v2, 3v3 or All formats)",
@@ -54,53 +58,50 @@ class CheckTierRL(commands.Cog):
             max_value=2500
         )
     ):
-        if game.lower() == "rocket league":
-            if format == "3v3":
-                league_rank = self.calculate_custom_league_rank(peak3s, peak2s)
-                tier = self.determine_tier(format, league_rank)
-                result = f"Given the following peaks:\n\t" \
-                        f"3v3: {peak3s} | 2v2: {peak2s}\n"\
-                        f"Your league rank is:\n\t" \
-                        f"{format}: {league_rank:.0f} ({tier})"
-            elif format == "2v2":
-                league_rank = self.calculate_custom_league_rank(peak2s, peak3s)
-                tier = self.determine_tier(format, league_rank)
-                result = f"Given the following peaks:\n\t" \
-                        f"3v3: {peak3s} | 2v2: {peak2s}\n"\
-                        f"Your League Rank is:\n\t" \
-                        f"{format}: {league_rank:.0f} ({tier})"
-            elif format == "1v1":
-                if peak1s is None:
-                    await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
-                    return
-                else:
-                    league_rank = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
-                    tier = self.determine_tier(format, league_rank)
-                    result = f"Given the following peaks:\n\t" \
-                        f"3v3: {peak3s} | 2v2: {peak2s} | 1v1: {peak1s}\n"\
-                        f"Your league rank is:\n\t" \
-                        f"{format}: {league_rank:.0f} ({tier})"
-            elif format == "All":
-                if peak1s is None:
-                    await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
-                    return
-                else:
-                    league_rank_1v1 = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
-                    tier_1v1 = self.determine_tier("1v1", league_rank_1v1)
-                    league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
-                    tier_2v2 = self.determine_tier("2v2", league_rank_2v2)
-                    league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
-                    tier_3v3 = self.determine_tier("3v3", league_rank_3v3)
-                    result = f"Given the following peaks:\n\t" \
-                        f"3v3: {peak3s} | 2v2: {peak2s} | 1v1: {peak1s}\n"\
-                        f"Your league ranks are:\n\t" \
-                        f"3v3: {league_rank_3v3:.0f} ({tier_3v3}) | 2v2: {league_rank_2v2:.0f} ({tier_2v2}) | 1v1: {league_rank_1v1:.0f} ({tier_1v1})"
-
-            else:
-                await ctx.send("Invalid format selected.")
+        if format == "3v3":
+            league_rank = self.calculate_custom_league_rank(peak3s, peak2s)
+            tier = self.determine_tier(format, league_rank)
+            result = f"Given the following peaks:\n\t" \
+                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
+                    f"Your league rank is:\n\t" \
+                    f"{format}: {league_rank:.0f} ({tier})"
+        elif format == "2v2":
+            league_rank = self.calculate_custom_league_rank(peak2s, peak3s)
+            tier = self.determine_tier(format, league_rank)
+            result = f"Given the following peaks:\n\t" \
+                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
+                    f"Your League Rank is:\n\t" \
+                    f"{format}: {league_rank:.0f} ({tier})"
+        elif format == "1v1":
+            if peak1s is None:
+                await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
                 return
+            else:
+                league_rank = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
+                tier = self.determine_tier(format, league_rank)
+                result = f"Given the following peaks:\n\t" \
+                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
+                    f"Your league rank is:\n\t" \
+                    f"{format}: {league_rank:.0f} ({tier})"
+        elif format == "All":
+            if peak1s is None:
+                await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
+                return
+            else:
+                league_rank_1v1 = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
+                tier_1v1 = self.determine_tier("1v1", league_rank_1v1)
+                league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
+                tier_2v2 = self.determine_tier("2v2", league_rank_2v2)
+                league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
+                tier_3v3 = self.determine_tier("3v3", league_rank_3v3)
+                result = f"Given the following peaks:\n\t" \
+                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
+                    f"Your league ranks are:\n\t" \
+                    f"3v3: {league_rank_3v3:.0f} ({tier_3v3})\n\t2v2: {league_rank_2v2:.0f} ({tier_2v2})\n\t1v1: {league_rank_1v1:.0f} ({tier_1v1})"
+
         else:
-            result = f"Game {game} not supported yet."
+            await ctx.send("Invalid format selected.")
+            return
         
         await ctx.send(result)
 
