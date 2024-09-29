@@ -61,16 +61,16 @@ class CheckTier(commands.Cog):
         if format == "3v3":
             league_rank = self.calculate_custom_league_rank(peak3s, peak2s)
             tier = self.determine_tier(format, league_rank)
-            result = f"Given the following peaks:\n\t" \
+            result = f"Based on the following information:\n\t" \
                     f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
-                    f"Your league rank is:\n\t" \
+                    f"Your unofficial league rank would be:\n\t" \
                     f"{format}: {league_rank:.0f} ({tier})"
         elif format == "2v2":
             league_rank = self.calculate_custom_league_rank(peak2s, peak3s)
             tier = self.determine_tier(format, league_rank)
-            result = f"Given the following peaks:\n\t" \
+            result = f"Based on the following information:\n\t" \
                     f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
-                    f"Your League Rank is:\n\t" \
+                    f"Your unofficial league rank would be:\n\t" \
                     f"{format}: {league_rank:.0f} ({tier})"
         elif format == "1v1":
             if peak1s is None:
@@ -79,9 +79,9 @@ class CheckTier(commands.Cog):
             else:
                 league_rank = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
                 tier = self.determine_tier(format, league_rank)
-                result = f"Given the following peaks:\n\t" \
+                result = f"Based on the following information:\n\t" \
                     f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
-                    f"Your league rank is:\n\t" \
+                    f"Your unofficial league rank would be:\n\t" \
                     f"{format}: {league_rank:.0f} ({tier})"
         elif format == "All":
             if peak1s is None:
