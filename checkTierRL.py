@@ -110,7 +110,7 @@ class CheckTier(commands.Cog):
         return league_rank
 
     def calculate_league_rank_1v1(self, peak3s, peak2s, peak1s):
-        league_rank_1v1 = (0.2 * peak3s) + (0.25 * peak2s) + (0.8 * peak1s)
+        league_rank_1v1 = (0.2 * max(peak3s, peak2s - 120)) + (0.25 * max(peak2s, peak3s - 120)) + (0.8 * peak1s)
         return league_rank_1v1
 
     def determine_tier(self, format, league_rank):
