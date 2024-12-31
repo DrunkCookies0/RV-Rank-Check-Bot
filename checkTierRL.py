@@ -96,7 +96,7 @@ class CheckTier(commands.Cog):
                 tier_3v3 = self.determine_tier("3v3", league_rank_3v3)
                 result = f"Given the following peaks:\n\t" \
                     f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
-                    f"Your league ranks are:\n\t" \
+                    f"Your unofficial league ranks are:\n\t" \
                     f"3v3: {league_rank_3v3:.0f} ({tier_3v3})\n\t2v2: {league_rank_2v2:.0f} ({tier_2v2})\n\t1v1: {league_rank_1v1:.0f} ({tier_1v1})"
 
         else:
