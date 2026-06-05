@@ -167,7 +167,7 @@ logged in as YourBotName (123456789012345678)
 _____________________________________
 ```
 
-The bot is now online. Use `/checktier setup_panel` (admin only) once in each channel where you want the button panel to appear.
+The bot is now online. Use `/checktier setup_panel` (admin only) in each channel where you want the button panel to appear.
 
 ---
 

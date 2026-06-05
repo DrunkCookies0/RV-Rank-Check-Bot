@@ -6,6 +6,8 @@ from nextcord.ext import commands
 testGuilds = None
 MIN_VALID_MMR = 300
 MAX_VALID_MMR = 2500
+RANK_PANEL_BUTTON_ID = "rank_check:open_modal"
+PANEL_HISTORY_SCAN_LIMIT = 200
 
 
 class RankInputModal(nextcord.ui.Modal):
@@ -57,7 +59,7 @@ class RankPanelView(nextcord.ui.View):
     @nextcord.ui.button(
         label="Click here to check your rank tier",
         style=nextcord.ButtonStyle.primary,
-        custom_id="rank_check:open_modal",
+        custom_id=RANK_PANEL_BUTTON_ID,
     )
     async def check_rank_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
         await interaction.response.send_modal(RankInputModal(self.cog))
@@ -102,13 +104,13 @@ class CheckTier(commands.Cog):
 
     async def channel_has_rank_panel(self, channel):
         try:
-            async for message in channel.history(limit=50):
+            async for message in channel.history(limit=PANEL_HISTORY_SCAN_LIMIT):
                 if message.author.id != self.bot.user.id:
                     continue
 
                 for action_row in message.components:
                     for component in action_row.children:
-                        if getattr(component, "custom_id", None) == "rank_check:open_modal":
+                        if getattr(component, "custom_id", None) == RANK_PANEL_BUTTON_ID:
                             return True
         except (nextcord.Forbidden, nextcord.HTTPException):
             return False
