@@ -5,6 +5,7 @@ from nextcord.ext import commands
 from nextcord import SlashOption
 
 testGuilds = None
+MIN_VALID_MMR = 300
 
 class CheckTier(commands.Cog):
 
@@ -18,7 +19,7 @@ class CheckTier(commands.Cog):
     async def checktier(self):
         pass
 
-    @checktier.subcommand(description="Check your Rocket League tier")
+    @checktier.subcommand(description="Check your Rocket League tiers")
     async def rocket_league(
         self,
         ctx,
@@ -28,12 +29,6 @@ class CheckTier(commands.Cog):
         #    required=True,
         #    choices=["Rocket League"]
         #),
-        format: str = SlashOption(
-            name="format",
-            description="Choose the format (1v1, 2v2, 3v3 or All formats)",
-            required=True,
-            choices=["1v1", "2v2", "3v3", "All"]
-        ),
         peak3s: int = SlashOption(
             name="peak3s",
             description="Peak MMR for 3v3",
@@ -49,65 +44,28 @@ class CheckTier(commands.Cog):
             default=0,
             min_value=0,
             max_value=2500
-        ),
-        peak1s: int = SlashOption(
-            name="peak1s",
-            description="Peak MMR for 1v1",
-            default=None,
-            min_value=0,
-            max_value=2500
         )
     ):
-        if format == "3v3":
-            league_rank = self.calculate_custom_league_rank(peak3s, peak2s)
-            tier = self.determine_tier(format, league_rank)
-            result = f"Based on the following information:\n\t" \
-                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
-                    f"Your unofficial league rank would be:\n\t" \
-                    f"{format}: {league_rank:.0f} ({tier})"
-        elif format == "2v2":
-            league_rank = self.calculate_custom_league_rank(peak2s, peak3s)
-            tier = self.determine_tier(format, league_rank)
-            result = f"Based on the following information:\n\t" \
-                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
-                    f"Your unofficial league rank would be:\n\t" \
-                    f"{format}: {league_rank:.0f} ({tier})"
-        elif format == "1v1":
-            if peak1s is None:
-                await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
-                return
-            else:
-                league_rank = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
-                tier = self.determine_tier(format, league_rank)
-                result = f"Based on the following information:\n\t" \
-                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
-                    f"Your unofficial league rank would be:\n\t" \
-                    f"{format}: {league_rank:.0f} ({tier})"
-        elif format == "All":
-            if peak1s is None:
-                await ctx.send("Peak MMR for 1v1 is required.", ephemeral=True)
-                return
-            else:
-                league_rank_1v1 = self.calculate_league_rank_1v1(peak3s, peak2s, peak1s)
-                tier_1v1 = self.determine_tier("1v1", league_rank_1v1)
-                league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
-                tier_2v2 = self.determine_tier("2v2", league_rank_2v2)
-                league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
-                tier_3v3 = self.determine_tier("3v3", league_rank_3v3)
-                result = f"Given the following peaks:\n\t" \
-                    f"3v3: {peak3s}\n\t2v2: {peak2s}\n\t1v1: {peak1s}\n"\
-                    f"Your unofficial league ranks are:\n\t" \
-                    f"3v3: {league_rank_3v3:.0f} ({tier_3v3})\n\t2v2: {league_rank_2v2:.0f} ({tier_2v2})\n\t1v1: {league_rank_1v1:.0f} ({tier_1v1})"
-
-        else:
-            await ctx.send("Invalid format selected.")
+        if peak3s < MIN_VALID_MMR or peak2s < MIN_VALID_MMR:
+            await ctx.send("ERROR, PLEASE TRY AGAIN", ephemeral=True)
             return
+
+        # 1v1 and all-format logic disabled for now.
+        league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
+        tier_2v2 = self.determine_tier("2v2", round(league_rank_2v2))
+        league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
+        tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
+
+        result = f"Given the following peaks:\n\t" \
+                f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
+                f"Your unofficial league ranks are:\n\t" \
+                f"3v3: {league_rank_3v3} ({tier_3v3})\n\t2v2: {league_rank_2v2} ({tier_2v2})"
         
         await ctx.send(result)
 
     def calculate_custom_league_rank(self, peak1, peak2):
         league_rank = max(peak1, peak2 - 120) * 0.75 + max(peak2, peak1 - 120) * 0.25
-        return league_rank
+        return round(league_rank)
 
     def calculate_league_rank_1v1(self, peak3s, peak2s, peak1s):
         league_rank_1v1 = (0.2 * max(peak3s, peak2s - 120)) + (0.25 * max(peak2s, peak3s - 120)) + (0.8 * peak1s)
@@ -123,8 +81,7 @@ class CheckTier(commands.Cog):
                 (1350, 1499, "Tier 4"),
                 (1200, 1349, "Tier 5"),
                 (1050, 1199, "Tier 6"),
-                (900, 1049, "Tier 7"),
-                (400, 899, "Tier 8"),
+                (300, 1049, "Tier 7"),
             ],
             "2v2": [
                 (1800, 9999, "Tier 1"),
@@ -133,8 +90,7 @@ class CheckTier(commands.Cog):
                 (1350, 1499, "Tier 4"),
                 (1200, 1349, "Tier 5"),
                 (1050, 1199, "Tier 6"),
-                (900, 1049, "Tier 7"),
-                (400, 899, "Tier 8"),
+                (300, 1049, "Tier 7"),
             ],
             "1v1": [
                 (1800, 9999, "Tier 1"),
