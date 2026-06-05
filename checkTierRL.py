@@ -49,6 +49,16 @@ class RankInputModal(nextcord.ui.Modal):
 
         await interaction.response.send_message(self.cog.build_result_message(peak3s, peak2s))
 
+        panel_message = (
+            "**RV Rank Check**\n"
+            "Click the button below to open the rank checker form."
+        )
+        self.cog.ensure_panel_view()
+        try:
+            await interaction.followup.send(panel_message, view=RankPanelView(self.cog))
+        except (nextcord.Forbidden, nextcord.HTTPException):
+            pass
+
 
 class RankPanelView(nextcord.ui.View):
 
