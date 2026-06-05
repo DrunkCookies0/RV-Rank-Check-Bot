@@ -70,7 +70,6 @@ class CheckTier(commands.Cog):
         global testGuilds
         testGuilds = guilds
         self.panel_view = RankPanelView(self)
-        self.panel_message_ids = {}
         self.bot.add_view(self.panel_view)
 
     def cog_unload(self):
@@ -90,22 +89,31 @@ class CheckTier(commands.Cog):
             await ctx.send("Only server admins can use this command.", ephemeral=True)
             return
 
-        existing_message_id = self.panel_message_ids.get(ctx.channel.id)
-        if existing_message_id:
-            try:
-                await ctx.channel.fetch_message(existing_message_id)
-                await ctx.send("A rank check panel already exists in this channel.", ephemeral=True)
-                return
-            except nextcord.NotFound:
-                self.panel_message_ids.pop(ctx.channel.id, None)
+        if await self.channel_has_rank_panel(ctx.channel):
+            await ctx.send("A rank check panel already exists in this channel.", ephemeral=True)
+            return
 
         panel_message = (
             "**RV Rank Check**\n"
             "Click the button below to open the rank checker form."
         )
-        panel = await ctx.channel.send(panel_message, view=self.panel_view)
-        self.panel_message_ids[ctx.channel.id] = panel.id
+        await ctx.channel.send(panel_message, view=self.panel_view)
         await ctx.send("Rank check panel posted in this channel.", ephemeral=True)
+
+    async def channel_has_rank_panel(self, channel):
+        try:
+            async for message in channel.history(limit=50):
+                if message.author.id != self.bot.user.id:
+                    continue
+
+                for action_row in message.components:
+                    for component in action_row.children:
+                        if getattr(component, "custom_id", None) == "rank_check:open_modal":
+                            return True
+        except (nextcord.Forbidden, nextcord.HTTPException):
+            return False
+
+        return False
 
     def validate_peak_inputs(self, peak3s, peak2s):
         peaks_by_field = {
