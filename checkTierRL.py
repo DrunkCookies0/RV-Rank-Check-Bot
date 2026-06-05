@@ -77,12 +77,12 @@ class CheckTier(commands.Cog):
     def cog_unload(self):
         self.panel_view.stop()
 
-    @nextcord.slash_command(guild_ids=testGuilds)
-    async def checktier(self):
-        pass
-
-    @checktier.subcommand(description="Admin only: post the rank-check button panel in this channel")
-    async def setup_panel(self, ctx):
+    @nextcord.slash_command(
+        guild_ids=testGuilds,
+        description="Admin only: post the rank-check button panel in this channel",
+        default_member_permissions=nextcord.Permissions(administrator=True),
+    )
+    async def setup(self, ctx):
         if ctx.guild is None:
             await ctx.send("This command can only be used in a server channel.", ephemeral=True)
             return

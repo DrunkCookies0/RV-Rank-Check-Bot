@@ -167,15 +167,15 @@ logged in as YourBotName (123456789012345678)
 _____________________________________
 ```
 
-The bot is now online. Use `/checktier setup_panel` (admin only) in each channel where you want the button panel to appear.
+The bot is now online. Use `/setup` (admin only) in each channel where you want the button panel to appear.
 
 ---
 
 ## Command Usage
 
-The bot registers a global slash command group `/checktier`.
+The bot registers a global slash command `/setup`.
 
-### `/checktier setup_panel` (Admin only)
+### `/setup` (Admin only)
 
 Posts a rank-check panel in the current channel with a persistent button:
 - **Button text:** `Click here to check your rank tier`
@@ -196,7 +196,7 @@ Only server admins can run this setup command.
 
 **Setup example**
 ```
-/checktier setup_panel
+/setup
 ```
 
 **Example output**
@@ -262,7 +262,7 @@ Global slash commands (used by `main.py`) can take **up to an hour** to propagat
 
 6. **Test the bot in Discord**
    - Open the server where you invited the bot.
-   - In any channel where you want rank checks, run `/checktier setup_panel` as an admin.
+   - In any channel where you want rank checks, run `/setup` as an admin.
    - Click the **Click here to check your rank tier** button.
    - Enter values for `peak3s` and `peak2s` such as `1600` and `1500`.
    - Submit the modal and confirm the bot posts the calculated tiers in chat.
@@ -308,7 +308,7 @@ worker: python main.py
 - Make sure there are no leading/trailing spaces in the token value.
 - If the token stopped working, regenerate it in the Developer Portal (**Bot → Reset Token**) and update your environment variable.
 
-### Slash command `/checktier setup_panel` not appearing
+### Slash command `/setup` not appearing
 
 - Verify the invite URL included both the `bot` and `applications.commands` scopes.
 - If using `main.py` (global commands), wait up to 60 minutes for Discord to propagate the command.
