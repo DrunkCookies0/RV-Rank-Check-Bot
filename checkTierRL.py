@@ -52,9 +52,9 @@ class CheckTier(commands.Cog):
 
         # 1v1 and all-format logic disabled for now.
         league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
-        tier_2v2 = self.determine_tier("2v2", league_rank_2v2)
+        tier_2v2 = self.determine_tier("2v2", round(league_rank_2v2))
         league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
-        tier_3v3 = self.determine_tier("3v3", league_rank_3v3)
+        tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
 
         result = f"Given the following peaks:\n\t" \
                 f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
