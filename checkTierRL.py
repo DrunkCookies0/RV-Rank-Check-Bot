@@ -95,11 +95,8 @@ class CheckTier(commands.Cog):
 
     def validate_peak_inputs(self, peak3s, peak2s):
         for peak in (peak3s, peak2s):
-            if peak < 0 or peak > MAX_VALID_MMR:
-                return False, "ERROR, VALUES MUST BE BETWEEN 0 AND 2500"
-
-        if peak3s < MIN_VALID_MMR or peak2s < MIN_VALID_MMR:
-            return False, "ERROR, PLEASE TRY AGAIN"
+            if peak < MIN_VALID_MMR or peak > MAX_VALID_MMR:
+                return False, "ERROR, VALUES MUST BE BETWEEN 300 AND 2500"
 
         return True, None
 
