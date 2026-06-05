@@ -37,7 +37,7 @@ class RankInputModal(nextcord.ui.Modal):
             peak3s = int(self.peak3s.value.strip())
             peak2s = int(self.peak2s.value.strip())
         except ValueError:
-            await interaction.response.send_message("ERROR, PLEASE ENTER VALID NUMBERS", ephemeral=True)
+            await interaction.response.send_message("Invalid input: please enter numbers for both MMR fields.", ephemeral=True)
             return
 
         is_valid, error_message = self.cog.validate_peak_inputs(peak3s, peak2s)
@@ -96,7 +96,7 @@ class CheckTier(commands.Cog):
     def validate_peak_inputs(self, peak3s, peak2s):
         for peak in (peak3s, peak2s):
             if peak < MIN_VALID_MMR or peak > MAX_VALID_MMR:
-                return False, "ERROR, VALUES MUST BE BETWEEN 300 AND 2500"
+                return False, "Error: values must be between 300 and 2500."
 
         return True, None
 
