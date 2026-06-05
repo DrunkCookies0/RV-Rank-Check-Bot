@@ -72,8 +72,10 @@ You also need a **Discord account** with access to the [Discord Developer Portal
 
 ### 3. Configure Privileged Intents
 
-This bot uses only the default intents.  
-In the **Bot** page, make sure all **Privileged Gateway Intents** toggles are **OFF** (the code does not require them).
+This bot enables message content intent in code (`intents.message_content = True`).  
+In the **Bot** page, turn **Message Content Intent** **ON**.
+
+You can keep **Server Members Intent** and **Presence Intent** **OFF** unless you add features that require them.
 
 ### 4. Generate an invite URL (current Discord UI)
 
