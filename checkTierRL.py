@@ -99,7 +99,15 @@ class CheckTier(commands.Cog):
             "**RV Rank Check**\n"
             "Click the button below to open the rank checker form."
         )
-        await ctx.channel.send(panel_message, view=self.panel_view)
+        try:
+            await ctx.channel.send(panel_message, view=self.panel_view)
+        except (nextcord.Forbidden, nextcord.HTTPException):
+            await ctx.send(
+                "I couldn't post the rank check panel in this channel. Please ensure I have permission to Send Messages.",
+                ephemeral=True,
+            )
+            return
+
         await ctx.send("Rank check panel posted in this channel.", ephemeral=True)
 
     async def channel_has_rank_panel(self, channel):
