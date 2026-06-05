@@ -70,7 +70,11 @@ class CheckTier(commands.Cog):
         global testGuilds
         testGuilds = guilds
         self.panel_view = RankPanelView(self)
+        self.panel_message_ids = {}
         self.bot.add_view(self.panel_view)
+
+    def cog_unload(self):
+        self.panel_view.stop()
 
     @nextcord.slash_command(guild_ids=testGuilds)
     async def checktier(self):
@@ -86,17 +90,34 @@ class CheckTier(commands.Cog):
             await ctx.send("Only server admins can use this command.", ephemeral=True)
             return
 
+        existing_message_id = self.panel_message_ids.get(ctx.channel.id)
+        if existing_message_id:
+            try:
+                await ctx.channel.fetch_message(existing_message_id)
+                await ctx.send("A rank check panel already exists in this channel.", ephemeral=True)
+                return
+            except nextcord.NotFound:
+                self.panel_message_ids.pop(ctx.channel.id, None)
+
         panel_message = (
             "**RV Rank Check**\n"
             "Click the button below to open the rank checker form."
         )
-        await ctx.channel.send(panel_message, view=self.panel_view)
+        panel = await ctx.channel.send(panel_message, view=self.panel_view)
+        self.panel_message_ids[ctx.channel.id] = panel.id
         await ctx.send("Rank check panel posted in this channel.", ephemeral=True)
 
     def validate_peak_inputs(self, peak3s, peak2s):
-        for peak in (peak3s, peak2s):
+        peaks_by_field = {
+            "3v3": peak3s,
+            "2v2": peak2s,
+        }
+        for field_name, peak in peaks_by_field.items():
             if peak < MIN_VALID_MMR or peak > MAX_VALID_MMR:
-                return False, f"Error: values must be between {MIN_VALID_MMR} and {MAX_VALID_MMR}."
+                return False, (
+                    f"Error: {field_name} value must be between "
+                    f"{MIN_VALID_MMR} and {MAX_VALID_MMR}."
+                )
 
         return True, None
 
