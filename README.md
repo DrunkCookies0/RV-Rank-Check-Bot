@@ -72,8 +72,8 @@ You also need a **Discord account** with access to the [Discord Developer Portal
 
 ### 3. Configure Privileged Intents
 
-This bot enables message content intent in code (`intents.message_content = True`).  
-In the **Bot** page, turn **Message Content Intent** **ON**.
+This bot currently uses slash commands and interaction components only, so **Message Content Intent** can remain **OFF**.  
+Only turn it **ON** if you add message-based commands/listeners that read normal message text.
 
 You can keep **Server Members Intent** and **Presence Intent** **OFF** unless you add features that require them.
 

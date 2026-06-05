@@ -5,8 +5,7 @@ from nextcord.ext import commands
 from checkTierRL import CheckTier
 
 intents = nextcord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix='/', intents=intents)
+bot = commands.Bot(command_prefix=commands.when_mentioned, intents=intents)
 bot.add_cog(CheckTier(bot))
 
 @bot.event
