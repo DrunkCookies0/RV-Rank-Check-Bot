@@ -167,28 +167,36 @@ logged in as YourBotName (123456789012345678)
 _____________________________________
 ```
 
-The bot is now online. Try the slash command in your Discord server.
+The bot is now online. Use `/setup` (admin only) in each channel where you want the button panel to appear.
 
 ---
 
 ## Command Usage
 
-The bot registers a global slash command group `/checktier`.
+The bot registers a global slash command `/setup`.
 
-### `/checktier rocket_league`
+### `/setup` (Admin only)
 
-Calculates your unofficial league tier based on peak Rocket League MMR.
+Posts a rank-check panel in the current channel with a persistent button:
+- **Button text:** `Click here to check your rank tier`
+- Clicking the button opens a popup modal
+- Users enter `peak3s` and `peak2s`
+- Bot posts their unofficial rank tier result in chat
+
+Only server admins can run this setup command.
+
+### Modal inputs (`Check Your Rank Tier`)
 
 | Parameter | Type | Required | Range | Description |
 |-----------|------|----------|-------|-------------|
-| `peak3s` | integer | ✅ | 0 – 2500 | Your peak 3v3 MMR |
-| `peak2s` | integer | ✅ | 0 – 2500 | Your peak 2v2 MMR |
+| `peak3s` | integer | ✅ | 300 – 2500 | Your peak 3v3 MMR |
+| `peak2s` | integer | ✅ | 300 – 2500 | Your peak 2v2 MMR |
 
-> Both values must be **≥ 300**; the bot will return an error for lower inputs.
+> Both values must be within **300–2500**; the bot will return an error for invalid inputs.
 
-**Example**
+**Setup example**
 ```
-/checktier rocket_league peak3s:1600 peak2s:1500
+/setup
 ```
 
 **Example output**
@@ -254,9 +262,10 @@ Global slash commands (used by `main.py`) can take **up to an hour** to propagat
 
 6. **Test the bot in Discord**
    - Open the server where you invited the bot.
-   - In any channel where the bot can talk, type `/checktier rocket_league`.
+   - In any channel where you want rank checks, run `/setup` as an admin.
+   - Click the **Click here to check your rank tier** button.
    - Enter values for `peak3s` and `peak2s` such as `1600` and `1500`.
-   - Submit the command and confirm the bot replies with the calculated tiers.
+   - Submit the modal and confirm the bot posts the calculated tiers in chat.
 
 ---
 
@@ -299,12 +308,13 @@ worker: python main.py
 - Make sure there are no leading/trailing spaces in the token value.
 - If the token stopped working, regenerate it in the Developer Portal (**Bot → Reset Token**) and update your environment variable.
 
-### Slash command `/checktier` not appearing
+### Slash command `/setup` not appearing
 
 - Verify the invite URL included both the `bot` and `applications.commands` scopes.
 - If using `main.py` (global commands), wait up to 60 minutes for Discord to propagate the command.
 - For instant registration, switch to `test_main.py` with a guild ID (see [Development & Testing](#development--testing)).
 - Re-check the bot has **Use Slash Commands** permission in the channel or server.
+- The user running setup must be a server admin.
 
 ### Bot sends no response / permission error
 
