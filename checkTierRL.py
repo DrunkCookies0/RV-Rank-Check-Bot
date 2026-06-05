@@ -59,13 +59,13 @@ class CheckTier(commands.Cog):
         result = f"Given the following peaks:\n\t" \
                 f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
                 f"Your unofficial league ranks are:\n\t" \
-                f"3v3: {league_rank_3v3:.0f} ({tier_3v3})\n\t2v2: {league_rank_2v2:.0f} ({tier_2v2})"
+                f"3v3: {league_rank_3v3} ({tier_3v3})\n\t2v2: {league_rank_2v2} ({tier_2v2})"
         
         await ctx.send(result)
 
     def calculate_custom_league_rank(self, peak1, peak2):
         league_rank = max(peak1, peak2 - 120) * 0.75 + max(peak2, peak1 - 120) * 0.25
-        return league_rank
+        return int(round(league_rank))
 
     def calculate_league_rank_1v1(self, peak3s, peak2s, peak1s):
         league_rank_1v1 = (0.2 * max(peak3s, peak2s - 120)) + (0.25 * max(peak2s, peak3s - 120)) + (0.8 * peak1s)
