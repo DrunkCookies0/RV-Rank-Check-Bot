@@ -1,67 +1,122 @@
 import nextcord
-import os
 
 from nextcord.ext import commands
-from nextcord import SlashOption
+
 
 testGuilds = None
 MIN_VALID_MMR = 300
+MAX_VALID_MMR = 2500
+
+
+class RankInputModal(nextcord.ui.Modal):
+
+    def __init__(self, cog):
+        super().__init__("Check Your Rank Tier")
+        self.cog = cog
+
+        self.peak3s = nextcord.ui.TextInput(
+            label="Peak 3v3 MMR",
+            placeholder="Enter a number between 300 and 2500",
+            min_length=1,
+            max_length=4,
+            required=True,
+        )
+        self.peak2s = nextcord.ui.TextInput(
+            label="Peak 2v2 MMR",
+            placeholder="Enter a number between 300 and 2500",
+            min_length=1,
+            max_length=4,
+            required=True,
+        )
+
+        self.add_item(self.peak3s)
+        self.add_item(self.peak2s)
+
+    async def callback(self, interaction: nextcord.Interaction):
+        try:
+            peak3s = int(self.peak3s.value.strip())
+            peak2s = int(self.peak2s.value.strip())
+        except ValueError:
+            await interaction.response.send_message("ERROR, PLEASE ENTER VALID NUMBERS", ephemeral=True)
+            return
+
+        is_valid, error_message = self.cog.validate_peak_inputs(peak3s, peak2s)
+        if not is_valid:
+            await interaction.response.send_message(error_message, ephemeral=True)
+            return
+
+        await interaction.response.send_message(self.cog.build_result_message(peak3s, peak2s))
+
+
+class RankPanelView(nextcord.ui.View):
+
+    def __init__(self, cog):
+        super().__init__(timeout=None)
+        self.cog = cog
+
+    @nextcord.ui.button(
+        label="Click here to check your rank tier",
+        style=nextcord.ButtonStyle.primary,
+        custom_id="rank_check:open_modal",
+    )
+    async def check_rank_button(self, button: nextcord.ui.Button, interaction: nextcord.Interaction):
+        await interaction.response.send_modal(RankInputModal(self.cog))
+
 
 class CheckTier(commands.Cog):
 
-    def __init__(self, bot, guilds = None):
+    def __init__(self, bot, guilds=None):
         self.bot = bot
         global testGuilds
         testGuilds = guilds
-
+        self.panel_view = RankPanelView(self)
+        self.bot.add_view(self.panel_view)
 
     @nextcord.slash_command(guild_ids=testGuilds)
     async def checktier(self):
         pass
 
-    @checktier.subcommand(description="Check your Rocket League tiers")
-    async def rocket_league(
-        self,
-        ctx,
-        #game: str = SlashOption(
-        #    name="game",
-        #    description="Name of the game (only 'Rocket League' is supported)",
-        #    required=True,
-        #    choices=["Rocket League"]
-        #),
-        peak3s: int = SlashOption(
-            name="peak3s",
-            description="Peak MMR for 3v3",
-            required=True,
-            default=0,
-            min_value=0,
-            max_value=2500
-        ),
-        peak2s: int = SlashOption(
-            name="peak2s",
-            description="Peak MMR for 2v2",
-            required=True,
-            default=0,
-            min_value=0,
-            max_value=2500
-        )
-    ):
-        if peak3s < MIN_VALID_MMR or peak2s < MIN_VALID_MMR:
-            await ctx.send("ERROR, PLEASE TRY AGAIN", ephemeral=True)
+    @checktier.subcommand(description="Admin only: post the rank-check button panel in this channel")
+    async def setup_panel(self, ctx):
+        if ctx.guild is None:
+            await ctx.send("This command can only be used in a server channel.", ephemeral=True)
             return
 
-        # 1v1 and all-format logic disabled for now.
+        if not ctx.user.guild_permissions.administrator:
+            await ctx.send("Only server admins can use this command.", ephemeral=True)
+            return
+
+        panel_message = (
+            "**RV Rank Check**\n"
+            "Click the button below to open the rank checker form."
+        )
+        await ctx.channel.send(panel_message, view=self.panel_view)
+        await ctx.send("Rank check panel posted in this channel.", ephemeral=True)
+
+    def validate_peak_inputs(self, peak3s, peak2s):
+        for peak in (peak3s, peak2s):
+            if peak < 0 or peak > MAX_VALID_MMR:
+                return False, "ERROR, VALUES MUST BE BETWEEN 0 AND 2500"
+
+        if peak3s < MIN_VALID_MMR or peak2s < MIN_VALID_MMR:
+            return False, "ERROR, PLEASE TRY AGAIN"
+
+        return True, None
+
+    def build_result_message(self, peak3s, peak2s):
         league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
         tier_2v2 = self.determine_tier("2v2", round(league_rank_2v2))
         league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
         tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
 
-        result = f"Given the following peaks:\n\t" \
-                f"3v3: {peak3s}\n\t2v2: {peak2s}\n"\
-                f"Your unofficial league ranks are:\n\t" \
-                f"3v3: {league_rank_3v3} ({tier_3v3})\n\t2v2: {league_rank_2v2} ({tier_2v2})"
-        
-        await ctx.send(result)
+        result = (
+            f"Given the following peaks:\n\t"
+            f"3v3: {peak3s}\n\t2v2: {peak2s}\n"
+            f"Your unofficial league ranks are:\n\t"
+            f"3v3: {league_rank_3v3} ({tier_3v3})\n\t2v2: {league_rank_2v2} ({tier_2v2})"
+        )
+
+        return result
 
     def calculate_custom_league_rank(self, peak1, peak2):
         league_rank = max(peak1, peak2 - 120) * 0.75 + max(peak2, peak1 - 120) * 0.25
@@ -108,5 +163,5 @@ class CheckTier(commands.Cog):
         for min_rank, max_rank, tier_name in tiers[format]:
             if min_rank <= league_rank <= max_rank:
                 return tier_name
-        
+
         return "Invalid Tier"
