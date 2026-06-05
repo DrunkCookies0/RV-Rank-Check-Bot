@@ -73,16 +73,20 @@ You also need a **Discord account** with access to the [Discord Developer Portal
 This bot uses only the default intents.  
 In the **Bot** page, make sure all **Privileged Gateway Intents** toggles are **OFF** (the code does not require them).
 
-### 4. Generate an invite URL
+### 4. Generate an invite URL (current Discord UI)
 
-1. In the left sidebar, click **OAuth2 → URL Generator**.
-2. Under **Scopes**, check:
+1. In the left sidebar, click **OAuth2**.
+2. On the OAuth2 page, scroll to the **OAuth2 URL Generator** section.
+3. Under **Scopes**, check:
    - `bot`
    - `applications.commands`
-3. Under **Bot Permissions**, check:
+4. Under **Bot Permissions**, check:
    - `Send Messages`
    - `Use Slash Commands`
-4. Copy the generated URL at the bottom of the page.
+5. Copy the value from **Generated URL** at the bottom.
+
+> You only need your bot token from the **Bot** page to run this project.
+> Do **not** use or share the OAuth2 **Client Secret**.
 
 ### 5. Invite the bot to your server
 
