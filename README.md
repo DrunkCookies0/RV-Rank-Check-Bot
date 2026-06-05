@@ -192,7 +192,7 @@ Only server admins can run this setup command.
 | `peak3s` | integer | ✅ | 300 – 2500 | Your peak 3v3 MMR |
 | `peak2s` | integer | ✅ | 300 – 2500 | Your peak 2v2 MMR |
 
-> Both values must be **≥ 300** and within **0–2500**; the bot will return an error for invalid inputs.
+> Both values must be within **300–2500**; the bot will return an error for invalid inputs.
 
 **Setup example**
 ```
