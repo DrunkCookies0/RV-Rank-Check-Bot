@@ -20,6 +20,8 @@ $env:DISCORD_TOKEN="your_token_here"        # Windows PowerShell
 python main.py
 ```
 
+For Railway deployment, put the token in **Railway → Service → Variables** as `DISCORD_TOKEN`.
+
 ---
 
 ## Table of Contents
@@ -131,7 +133,15 @@ This installs `nextcord`, the Discord library used by the bot.
 
 ### 4. Set the bot token
 
-The bot reads the token from the `DISCORD_TOKEN` environment variable.
+Use the token from the Discord Developer Portal **Bot** page.
+
+| Use case | Where the token goes |
+|----------|----------------------|
+| Run `python main.py` locally | `DISCORD_TOKEN` environment variable |
+| Run `python test_main.py` locally | `config.json` in the project root |
+| Deploy on Railway | Railway service variable named `DISCORD_TOKEN` |
+
+The normal bot entry point (`main.py`) reads the token from the `DISCORD_TOKEN` environment variable.
 
 **macOS / Linux (current session)**
 ```bash
@@ -214,11 +224,15 @@ Global slash commands (used by `main.py`) can take **up to an hour** to propagat
 > Note: as currently implemented, `checkTierRL.py` registers commands globally because `guild_ids` is `None` at import time. If you want instant guild-scoped registration during development, update the `@nextcord.slash_command(guild_ids=...)` decorator to include your Guild ID(s) and then run `test_main.py`.
 ### Setup for testing
 
-1. **Find your test server's Guild ID**
+1. **Invite the bot to a test server**
+   - Use the OAuth2 URL from [Discord Bot Setup](#discord-bot-setup).
+   - Pick a server you control so you can safely test slash commands.
+
+2. **Find your test server's Guild ID**
    - In Discord, enable Developer Mode: *Settings → Advanced → Developer Mode*.
    - Right-click your server icon → **Copy Server ID**.
 
-2. **Create `config.json`** in the project root:
+3. **Create `config.json`** in the project root:
    ```json
    {
      "token": "your_token_here"
@@ -226,17 +240,23 @@ Global slash commands (used by `main.py`) can take **up to an hour** to propagat
    ```
    > ⚠️ `config.json` is listed in `.gitignore` — never commit it.
 
-3. **Update the guild ID in `test_main.py`**
+4. **Update the guild ID in `test_main.py`**
    Open `test_main.py` and replace the existing guild ID on this line:
    ```python
    bot.add_cog(CheckTier(bot, [YOUR_GUILD_ID_HERE]))
    ```
 
-4. **Run the test entry point**
+5. **Run the test entry point**
    ```bash
    python test_main.py
    ```
    Slash commands will appear in your test server within seconds.
+
+6. **Test the bot in Discord**
+   - Open the server where you invited the bot.
+   - In any channel where the bot can talk, type `/checktier rocket_league`.
+   - Enter values for `peak3s` and `peak2s` such as `1600` and `1500`.
+   - Submit the command and confirm the bot replies with the calculated tiers.
 
 ---
 
@@ -247,6 +267,18 @@ The repository includes a `Procfile` for platforms that support worker-type proc
 ```
 worker: python main.py
 ```
+
+### Railway setup
+
+1. Push this repository to GitHub.
+2. In Railway, create a **New Project** and choose **Deploy from GitHub repo**.
+3. Select this repository.
+4. After Railway creates the service, open the service and go to **Variables**.
+5. Add a variable named `DISCORD_TOKEN` and paste in your bot token from the Discord Developer Portal.
+6. Deploy the service.
+7. Open the Railway logs and confirm you see the `logged in as ...` message.
+
+> This project is a background worker, not a web app. If Railway asks for a start command, use `python main.py`.
 
 ### General steps for any host
 
