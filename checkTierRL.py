@@ -71,11 +71,20 @@ class CheckTier(commands.Cog):
         self.bot = bot
         global testGuilds
         testGuilds = guilds
-        self.panel_view = RankPanelView(self)
-        self.bot.add_view(self.panel_view)
+        self.panel_view = None
+
+    def ensure_panel_view(self):
+        if self.panel_view is None:
+            self.panel_view = RankPanelView(self)
+            self.bot.add_view(self.panel_view)
 
     def cog_unload(self):
-        self.panel_view.stop()
+        if self.panel_view is not None:
+            self.panel_view.stop()
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.ensure_panel_view()
 
     @nextcord.slash_command(
         guild_ids=testGuilds,
@@ -83,6 +92,8 @@ class CheckTier(commands.Cog):
         default_member_permissions=nextcord.Permissions(administrator=True),
     )
     async def setup(self, ctx):
+        self.ensure_panel_view()
+
         if ctx.guild is None:
             await ctx.send("This command can only be used in a server channel.", ephemeral=True)
             return
