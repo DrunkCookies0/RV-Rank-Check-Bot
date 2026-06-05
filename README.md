@@ -209,8 +209,9 @@ Your unofficial league ranks are:
 
 ### Why use `test_main.py`?
 
-Global slash commands (used by `main.py`) can take **up to an hour** to propagate across Discord. During development, use `test_main.py` instead — it registers commands to a specific guild immediately.
+Global slash commands (used by `main.py`) can take **up to an hour** to propagate across Discord.
 
+> Note: as currently implemented, `checkTierRL.py` registers commands globally because `guild_ids` is `None` at import time. If you want instant guild-scoped registration during development, update the `@nextcord.slash_command(guild_ids=...)` decorator to include your Guild ID(s) and then run `test_main.py`.
 ### Setup for testing
 
 1. **Find your test server's Guild ID**
