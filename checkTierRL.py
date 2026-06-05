@@ -5,6 +5,7 @@ from nextcord.ext import commands
 from nextcord import SlashOption
 
 testGuilds = None
+MIN_VALID_MMR = 300
 
 class CheckTier(commands.Cog):
 
@@ -30,9 +31,14 @@ class CheckTier(commands.Cog):
         #),
         format: str = SlashOption(
             name="format",
-            description="Choose the format (1v1, 2v2, 3v3 or All formats)",
+            description="Choose the format (2v2 or 3v3)",
             required=True,
-            choices=["1v1", "2v2", "3v3", "All"]
+            choices=[
+                # "1v1",
+                "2v2",
+                "3v3",
+                # "All"
+            ]
         ),
         peak3s: int = SlashOption(
             name="peak3s",
@@ -58,6 +64,10 @@ class CheckTier(commands.Cog):
             max_value=2500
         )
     ):
+        if peak3s < MIN_VALID_MMR or peak2s < MIN_VALID_MMR:
+            await ctx.send("ERROR, PLEASE TRY AGAIN", ephemeral=True)
+            return
+
         if format == "3v3":
             league_rank = self.calculate_custom_league_rank(peak3s, peak2s)
             tier = self.determine_tier(format, league_rank)
@@ -123,8 +133,7 @@ class CheckTier(commands.Cog):
                 (1350, 1499, "Tier 4"),
                 (1200, 1349, "Tier 5"),
                 (1050, 1199, "Tier 6"),
-                (900, 1049, "Tier 7"),
-                (400, 899, "Tier 8"),
+                (300, 1049, "Tier 7"),
             ],
             "2v2": [
                 (1800, 9999, "Tier 1"),
@@ -133,8 +142,7 @@ class CheckTier(commands.Cog):
                 (1350, 1499, "Tier 4"),
                 (1200, 1349, "Tier 5"),
                 (1050, 1199, "Tier 6"),
-                (900, 1049, "Tier 7"),
-                (400, 899, "Tier 8"),
+                (300, 1049, "Tier 7"),
             ],
             "1v1": [
                 (1800, 9999, "Tier 1"),
