@@ -47,17 +47,24 @@ class RankInputModal(nextcord.ui.Modal):
             await interaction.response.send_message(error_message, ephemeral=True)
             return
 
-        await interaction.response.send_message(self.cog.build_result_message(peak3s, peak2s))
-
-        panel_message = (
-            "**RV Rank Check**\n"
-            "Click the button below to open the rank checker form."
-        )
         self.cog.ensure_panel_view()
         try:
-            await interaction.followup.send(panel_message, view=RankPanelView(self.cog))
+            combined_message = (
+                f"{interaction.user.mention}\n"
+                f"{self.cog.build_result_message(peak3s, peak2s)}\n\n"
+                "**RV Rank Check**\n"
+                "Click the button below to open the rank checker form."
+            )
+            await interaction.response.send_message(combined_message, view=RankPanelView(self.cog))
         except (nextcord.Forbidden, nextcord.HTTPException):
-            pass
+            error_message = (
+                "I couldn't post the rank result in this channel. "
+                "Please ensure I have permission to Send Messages."
+            )
+            if interaction.response.is_done():
+                await interaction.followup.send(error_message, ephemeral=True)
+            else:
+                await interaction.response.send_message(error_message, ephemeral=True)
 
 
 class RankPanelView(nextcord.ui.View):
