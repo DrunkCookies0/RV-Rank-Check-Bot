@@ -57,7 +57,14 @@ class RankInputModal(nextcord.ui.Modal):
             )
             await interaction.response.send_message(combined_message, view=RankPanelView(self.cog))
         except (nextcord.Forbidden, nextcord.HTTPException):
-            pass
+            error_message = (
+                "I couldn't post the rank result in this channel. "
+                "Please ensure I have permission to Send Messages."
+            )
+            if interaction.response.is_done():
+                await interaction.followup.send(error_message, ephemeral=True)
+            else:
+                await interaction.response.send_message(error_message, ephemeral=True)
 
 
 class RankPanelView(nextcord.ui.View):
