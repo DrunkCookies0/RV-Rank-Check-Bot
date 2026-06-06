@@ -177,7 +177,7 @@ class CheckTier(commands.Cog):
         tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
 
         result = (
-            "## :RIVALRY: Rank Tier Check\n"
+            "## <:RIVALRY:1507500956835909813> Rank Tier Check\n"
             f"**Player:** {user_mention}\n"
             "### Input Peaks\n"
             f"- **3v3:** `{peak3s}`\n"
