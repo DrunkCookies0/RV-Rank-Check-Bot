@@ -25,7 +25,7 @@ class RankInputModal(nextcord.ui.Modal):
         )
         self.peak2s = nextcord.ui.TextInput(
             label="Peak 2v2 MMR",
-            placeholder="Enter your peak 3v3 MMR based on TRN",
+            placeholder="Enter your peak 2v2 MMR based on TRN",
             min_length=1,
             max_length=4,
             required=True,
