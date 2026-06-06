@@ -49,13 +49,8 @@ class RankInputModal(nextcord.ui.Modal):
 
         self.cog.ensure_panel_view()
         try:
-            combined_message = (
-                f"{interaction.user.mention}\n"
-                f"{self.cog.build_result_message(peak3s, peak2s)}\n\n"
-                "**RV Rank Check**\n"
-                "Click the button below to open the rank checker form."
-            )
-            await interaction.response.send_message(combined_message, view=RankPanelView(self.cog))
+            result_message = self.cog.build_result_message(peak3s, peak2s, interaction.user.mention)
+            await interaction.response.send_message(result_message)
         except (nextcord.Forbidden, nextcord.HTTPException):
             error_message = (
                 "I couldn't post the rank result in this channel. "
@@ -167,17 +162,21 @@ class CheckTier(commands.Cog):
 
         return True, None
 
-    def build_result_message(self, peak3s, peak2s):
+    def build_result_message(self, peak3s, peak2s, user_mention):
         league_rank_2v2 = self.calculate_custom_league_rank(peak2s, peak3s)
         tier_2v2 = self.determine_tier("2v2", round(league_rank_2v2))
         league_rank_3v3 = self.calculate_custom_league_rank(peak3s, peak2s)
         tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
 
         result = (
-            f"Given the following peaks:\n\t"
-            f"3v3: {peak3s}\n\t2v2: {peak2s}\n"
-            f"Your unofficial league ranks are:\n\t"
-            f"3v3: {league_rank_3v3} ({tier_3v3})\n\t2v2: {league_rank_2v2} ({tier_2v2})"
+            "## 🏁 RV Rank Check Results\n"
+            f"**Player:** {user_mention}\n\n"
+            "### Input Peaks\n"
+            f"- **3v3:** `{peak3s}`\n"
+            f"- **2v2:** `{peak2s}`\n\n"
+            "### Unofficial League Ranks\n"
+            f"- **3v3:** `{league_rank_3v3}` — **{tier_3v3}**\n"
+            f"- **2v2:** `{league_rank_2v2}` — **{tier_2v2}**"
         )
 
         return result
