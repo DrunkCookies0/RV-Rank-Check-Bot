@@ -183,7 +183,7 @@ Posts a rank-check panel in the current channel with a persistent button:
 - **Button text:** `Click here to check your rank tier`
 - Clicking the button opens a popup modal
 - Users enter `peak3s` and `peak2s`
-- Bot posts their unofficial rank tier result in chat
+- Bot posts their unofficial rank tier result in chat with the same button, so the next user can submit theirs
 
 Only server admins can run this setup command.
 
