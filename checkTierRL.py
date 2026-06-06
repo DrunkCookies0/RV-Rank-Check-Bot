@@ -50,7 +50,15 @@ class RankInputModal(nextcord.ui.Modal):
         self.cog.ensure_panel_view()
         try:
             result_message = self.cog.build_result_message(peak3s, peak2s, interaction.user.mention)
-            await interaction.response.send_message(result_message)
+            if interaction.channel is None:
+                await interaction.response.send_message(
+                    "I couldn't find a channel to post your rank result.",
+                    ephemeral=True,
+                )
+                return
+
+            await interaction.response.defer()
+            await interaction.channel.send(result_message)
         except (nextcord.Forbidden, nextcord.HTTPException):
             error_message = (
                 "I couldn't post the rank result in this channel. "
