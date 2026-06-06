@@ -183,7 +183,7 @@ Posts a rank-check panel in the current channel with a persistent button:
 - **Button text:** `Click here to check your rank tier`
 - Clicking the button opens a popup modal
 - Users enter `peak3s` and `peak2s`
-- Bot posts their unofficial rank tier result in chat
+- Bot posts their unofficial rank tier result in chat with the same rank-check button attached
 
 Only server admins can run this setup command.
 
@@ -267,7 +267,7 @@ Global slash commands (used by `main.py`) can take **up to an hour** to propagat
    - In any channel where you want rank checks, run `/setup` as an admin.
    - Click the **Click here to check your rank tier** button.
    - Enter values for `peak3s` and `peak2s` such as `1600` and `1500`.
-   - Submit the modal and confirm the bot posts the calculated tiers in chat.
+   - Submit the modal and confirm the bot posts the calculated tiers in chat with the rank-check button attached.
 
 ---
 
