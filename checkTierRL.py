@@ -18,14 +18,14 @@ class RankInputModal(nextcord.ui.Modal):
 
         self.peak3s = nextcord.ui.TextInput(
             label="Peak 3v3 MMR",
-            placeholder="Enter a number between 300 and 2500",
+            placeholder="Enter your peak 3v3 MMR based on TRN",
             min_length=1,
             max_length=4,
             required=True,
         )
         self.peak2s = nextcord.ui.TextInput(
             label="Peak 2v2 MMR",
-            placeholder="Enter a number between 300 and 2500",
+            placeholder="Enter your peak 2v2 MMR based on TRN",
             min_length=1,
             max_length=4,
             required=True,
@@ -77,7 +77,7 @@ class RankPanelView(nextcord.ui.View):
         self.cog = cog
 
     @nextcord.ui.button(
-        label="Click here to check your rank tier",
+        label="Click here to calculate your rank tier",
         style=nextcord.ButtonStyle.primary,
         custom_id=RANK_PANEL_BUTTON_ID,
     )
@@ -177,11 +177,11 @@ class CheckTier(commands.Cog):
         tier_3v3 = self.determine_tier("3v3", round(league_rank_3v3))
 
         result = (
-            "## 🏁 RV Rank Check Results\n"
-            f"**Player:** {user_mention}\n\n"
+            "## <:RIVALRY:1507500956835909813> Rank Tier Check\n"
+            f"**Player:** {user_mention}\n"
             "### Input Peaks\n"
             f"- **3v3:** `{peak3s}`\n"
-            f"- **2v2:** `{peak2s}`\n\n"
+            f"- **2v2:** `{peak2s}`\n"
             "### Unofficial League Ranks\n"
             f"- **3v3:** `{league_rank_3v3}` — **{tier_3v3}**\n"
             f"- **2v2:** `{league_rank_2v2}` — **{tier_2v2}**"
